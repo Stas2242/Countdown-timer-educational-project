@@ -1,29 +1,28 @@
 'use strict';
 
-const inputTitleText = document.getElementById(['title-date'])
-const mainTitle = document.querySelector('h1')
-const buttonStart = document.getElementById('btn')
-const buttonReset = document.getElementById(['btn-reset'])
-const inputDate = document.getElementById('date')
-const numbers = document.querySelector('.numbers')
+const inputTitleText = document.getElementById(['title-date']);
+const mainTitle = document.querySelector('h1');
+const buttonStart = document.getElementById('btn');
+const buttonReset = document.getElementById(['btn-reset']);
+const inputDate = document.getElementById('date');
+const numbers = document.querySelector('.numbers');
 
-const firstScreen = document.querySelector('.input')
-const secondScreen = document.querySelector('.output')
+const firstScreen = document.querySelector('.input');
+const secondScreen = document.querySelector('.output');
 
-let timerDeadline
-let timerId = null
+let timerDeadline;
+let timerId = null;
 let dateNow = moment();
 
 function timerStart () {
     const localdate = localStorage.setItem('date', inputDate.value);
-    timerDeadline = inputDate.value;
 
     if (inputDate.value === '') {
         alert('Пожалуйста введите дату');
         return;
     }
 
-    if (moment(timerDeadline).diff(dateNow) <= 0) {
+    if (moment(inputDate.value).diff(dateNow) <= 0) {
         inputDate.value = '';
         alert('Дата прошла! Введите более позднюю дату!');
         return; 
@@ -37,6 +36,7 @@ function timerStart () {
 
 function countDown () {
     dateNow = moment(); 
+    timerDeadline = inputDate.value;
 
     if (moment(timerDeadline).diff(dateNow) <= 0) {
         clearInterval(timerId);
@@ -80,18 +80,18 @@ function timerReset() {
 }
 
 const localStorageCheck = () => {
-    const localdate = localStorage.getItem('date')
-    const localTitle = localStorage.getItem('title')
+    const localdate = localStorage.getItem('date');
+    const localTitle = localStorage.getItem('title');
 
     if (!localdate && !localTitle) {
         return;
-    } else {
-        timerDeadline = localdate
-        mainTitle.textContent = localTitle
-
-        timerId = setInterval(countDown, 1000);
-        newScreen();
     }
+
+    timerDeadline = localdate;
+    mainTitle.textContent = localTitle;
+
+    timerId = setInterval(countDown, 1000);
+    newScreen();
 }
 
 localStorageCheck();
