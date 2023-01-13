@@ -1,21 +1,22 @@
 'use strict';
 
-const inputTitleText = document.getElementById(['title-date'])
-const mainTitle = document.querySelector('h1')
-const buttonStart = document.getElementById('btn')
-const buttonReset = document.getElementById(['btn-reset'])
-const inputDate = document.getElementById('date')
-const numbers = document.querySelector('.numbers')
+const inputTitleText = document.getElementById(['title-date']);
+const mainTitle = document.querySelector('h1');
+const buttonStart = document.getElementById('btn');
+const buttonReset = document.getElementById(['btn-reset']);
+const inputDate = document.getElementById('date');
+const numbers = document.querySelector('.numbers');
 
-const firstScreen = document.querySelector('.input')
-const secondScreen = document.querySelector('.output')
+const firstScreen = document.querySelector('.input');
+const secondScreen = document.querySelector('.output');
 
-let timerDeadline
-let timerId = null
+let timerDeadline;
+let timerId = null;
 let dateNow = moment();
 
 function timerStart () {
-    timerDeadline = inputDate.value
+    localStorage.setItem('date', inputDate.value);
+    timerDeadline = inputDate.value;
 
     if (inputDate.value === '') {
         alert('Пожалуйста введите дату');
@@ -23,18 +24,19 @@ function timerStart () {
     }
 
     if (moment(timerDeadline).diff(dateNow) <= 0) {
-        inputDate.value = ''
+        inputDate.value = '';
         alert('Дата прошла! Введите более позднюю дату!');
         return; 
     }
 
+    countDown();
     timerId = setInterval(countDown, 1000);
     titleChange();
     newScreen();
 }
 
 function countDown () {
-    dateNow = moment() 
+    dateNow = moment(); 
 
     if (moment(timerDeadline).diff(dateNow) <= 0) {
         clearInterval(timerId);
@@ -51,6 +53,7 @@ function countDown () {
 
 function titleChange () {
     const newTitle = `${inputTitleText.value} (${moment(timerDeadline).format('DD.MM.YYYY')})`;
+    const localTitle = localStorage.setItem('title', newTitle);
     mainTitle.innerHTML = newTitle;
 }
 
@@ -67,11 +70,31 @@ function timerReset() {
     buttonStart.classList.remove('hide');
     buttonReset.classList.add('hide');
 
-    mainTitle.innerHTML = 'Создать новый таймер обратного отсчета'
-    inputTitleText.value = ''
-    inputDate.value = ''
+    mainTitle.innerHTML = 'Создать новый таймер обратного отсчета';
+    inputTitleText.value = '';
+    inputDate.value = '';
     clearInterval(timerId);
+    
+    localStorage.removeItem('title');
+    localStorage.removeItem('date');
 }
+
+const localStorageCheck = () => {
+    const localDate = localStorage.getItem('date');
+    const localTitle = localStorage.getItem('title');
+
+    if (!localDate && !localTitle) {
+        return;
+    }
+
+    timerDeadline = localDate;
+    mainTitle.textContent = localTitle;
+
+    timerId = setInterval(countDown, 1000);
+    newScreen();
+}
+
+localStorageCheck();
 
 buttonStart.addEventListener('click', timerStart);
 buttonReset.addEventListener('click', timerReset);
