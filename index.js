@@ -15,14 +15,15 @@ let timerId = null;
 let dateNow = moment();
 
 function timerStart () {
-    const localdate = localStorage.setItem('date', inputDate.value);
+    localStorage.setItem('date', inputDate.value);
+    timerDeadline = inputDate.value;
 
     if (inputDate.value === '') {
         alert('Пожалуйста введите дату');
         return;
     }
 
-    if (moment(inputDate.value).diff(dateNow) <= 0) {
+    if (moment(timerDeadline).diff(dateNow) <= 0) {
         inputDate.value = '';
         alert('Дата прошла! Введите более позднюю дату!');
         return; 
@@ -36,7 +37,6 @@ function timerStart () {
 
 function countDown () {
     dateNow = moment(); 
-    timerDeadline = inputDate.value;
 
     if (moment(timerDeadline).diff(dateNow) <= 0) {
         clearInterval(timerId);
@@ -80,14 +80,14 @@ function timerReset() {
 }
 
 const localStorageCheck = () => {
-    const localdate = localStorage.getItem('date');
+    const localDate = localStorage.getItem('date');
     const localTitle = localStorage.getItem('title');
 
-    if (!localdate && !localTitle) {
+    if (!localDate && !localTitle) {
         return;
     }
 
-    timerDeadline = localdate;
+    timerDeadline = localDate;
     mainTitle.textContent = localTitle;
 
     timerId = setInterval(countDown, 1000);
