@@ -1,5 +1,7 @@
 // 'use strict';
 
+import '../style.css';
+
 import { Timer } from './timer.js';
 
 const inputTitleText = document.getElementById(['title-date']);
